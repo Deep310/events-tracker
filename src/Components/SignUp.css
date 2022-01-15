@@ -1,0 +1,83 @@
+.signup {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	height: 125vh;
+	background-color: #754AD5;
+}
+
+.signup_container {
+	width: 300px;
+	height: fit-content;
+	display: flex;
+	flex-direction: column;
+	border-radius: 5px;
+	border: 1px solid lightgray;
+    background-color: #fff;
+	padding: 20px;
+    margin-top: 50px;
+}
+
+.signup_container > h1 {
+	font-weight: 200;
+    font-size: 30px;
+    margin: 0;
+    margin-bottom: 20px;
+}
+
+.signup_container > form > h5 {
+    margin: 0;
+	margin-bottom: 5px;
+}
+
+.signup_container > form > input {
+	height: 30px;
+	margin-bottom: 10px;
+	background-color: white;
+	width: 98%;
+    border: 1px solid;
+    border-radius: 5px;
+    padding: 0 5px;
+    
+}
+
+.signup_container > p {
+	margin-top: 15px;
+	font-size: 12px;
+}
+
+.signup_signupButton {
+	background-color: #f1c860;
+	border: 1px solid;
+	border-radius: 2px;
+	width: 100%;
+	height: 30px;
+	margin-top: 10px;
+	border-color: darkgray;
+}
+
+.signup_signupButton:hover {
+	cursor: pointer;
+	background-color: #f1bd37;
+}
+
+.signup_notice{
+    margin: 0;
+}
+
+.signup_login{
+    text-align: center;
+}
+
+.signup_login h4:first-child{
+    margin: 0;
+}
+
+.signup_login h4:last-child{
+    margin: 0;
+    margin-top: 10px;
+}
+
+.signup_login h4:last-child:hover{
+    text-decoration: underline;
+}
