@@ -1,37 +1,24 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuthState } from 'react-firebase-hooks/auth'
-import { signInWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '../firebase'
+import { useAuth } from '../hooks/useAuth'
 import './Login.css'
 
 function Login() {
-    // const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [user, loading, error] = useAuthState(auth);
+    const navigate = useNavigate();
+    const auth = useAuth();
 
-    useEffect(() => {
-        if (loading) return;
-        //if (user) navigate('/', { replace: true });
-    }, [user]);
-
-    const loginWithFirebase = (e) => {
+    const loginWithFirebase = async (e) => {
         // prevent the page from refreshing automatically
         e.preventDefault();
 
         //log in to account here
         try {
-            signInWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    // successfully created user with email and password
-                    // returns an object with all the user credentials
+            await auth.login(email, password);
+            console.log("I am signed in yay");
 
-                    return
-                    console.log(userCredential.user);
-                    console.log("i am logged in user");
-
-                })
+            navigate("/dashboard");
         }
         catch (error) {
             console.error(error);
@@ -55,7 +42,7 @@ function Login() {
                 <form id="loginForm" noValidate>
                     <h5>E-mail</h5>
                     <input
-                        type="text"
+                        type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />

@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
-import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
-import { auth, db } from '../firebase'
+import { useAuth } from '../hooks/useAuth'
 import './SignUp.css'
 
 function SignUp() {
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [accessCode, setAccessCode] = useState('');
@@ -14,51 +12,40 @@ function SignUp() {
 
     const secretCode = process.env.REACT_APP_SECRET_USACS_ACCESS_CODE;
 
-    const register = (e) => {
+    const auth = useAuth();
+
+    const register = async (e) => {
         // prevent the page from refreshing automatically
         e.preventDefault();
 
+        // password must be at least 6 characters long
         if (password.length < 6) {
             alert('Passwords must be at least 6 characters.');
             return;
         }
 
+        // values of password and confirmPass must be same
         if (password !== confirmPass) {
             alert('Passwords must match!!');
             return;
         }
 
+        // check if the access code is true or false
         if (accessCode !== secretCode) {
             alert('Incorrect access code. Are you really a USACS eboard member?');
             return;
         }
+
         //firebase register account here
         try {
-            createUserWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    // successfully created user with email and password
-                    // returns an object with all the user credentials
-
-                    // console.log("i am new user");
-                    const uid = userCredential['user'].uid;
-                    // console.log(uid);
-                    const data = {
-                        events: 0,
-                        timestamp: serverTimestamp()
-                    };
-
-                    const newDoc = doc(db, "users", uid);
-                    setDoc(newDoc, data);
-
-                });
-
-            //console.log("Document written with ID: ", docRef.id);
+            await auth.signup(email, password);
+            console.log("successfully signed up");
+            navigate("/dashboard");
         }
         catch (error) {
             console.error(error);
             alert(error.message);
         };
-
 
         // after successfully registering the user with firebase auth,
         // clear all the form fields
@@ -76,7 +63,7 @@ function SignUp() {
                 <form id="signupForm" noValidate>
                     <h5>E-mail</h5>
                     <input
-                        type="text"
+                        type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Enter your email"
