@@ -4,6 +4,9 @@ import SignUp from './Components/SignUp'
 import Login from './Components/Login'
 import NotFound from './Components/NotFound'
 import Dashboard from './Components/Dashboard'
+import NewEventPage from './Components/NewEventPage'
+import EventsHistory from './Components/EventsHistory'
+import CheckInPage from './Components/CheckInPage'
 import { useAuth } from './hooks/useAuth'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 
@@ -23,13 +26,29 @@ function App() {
         <Routes>
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/" element={<Home />} />
+          <Route path="/check-in" element={<CheckInPage />} />
           <Route
             path="/dashboard"
             element={
               <PrivateOutlet>
                 <Dashboard />
-              </PrivateOutlet>} />
+              </PrivateOutlet>}
+          />
+          <Route
+            path="/new-event"
+            element={
+              <PrivateOutlet>
+                <NewEventPage />
+              </PrivateOutlet>}
+          />
+          <Route
+            path="/events-history"
+            element={
+              <PrivateOutlet>
+                <EventsHistory />
+              </PrivateOutlet>}
+          />
+          <Route path="/" element={<Home />} />
           {/* for any other route, show a 404 error */}
           <Route path="*" element={<NotFound />} />
         </Routes>

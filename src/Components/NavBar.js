@@ -8,15 +8,15 @@ function NavBar() {
 
     return (
         <header className="header">
-            <a href="." className="logo">Trackable </a>
+            <a href="." className="logo">Trackd </a>
             <input className="menu-btn" type="checkbox" id="menu-btn" />
             <label className="menu-icon" for="menu-btn"><span className="navicon"></span></label>
             <ul className="menu">
                 {auth.user &&
                     <li><Link to="/">Home</Link></li>
                 }
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact Us</a></li>
+                <li><Link to="/#about">About</Link></li>
+                <li><Link to="/#contact">Contact Us</Link></li>
 
                 {/* if the user is signed in, show sign out button...
                 ... else, show sign up and login buttons */}

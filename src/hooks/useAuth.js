@@ -17,49 +17,44 @@ export const AuthProvider = ({ children }) => {
 
     // wrap the firebase sign up, sign in, and sign out methods
     // and save the user to state after each method call
+    const login = async (email, password) => {
+        const response = await signInWithEmailAndPassword(auth, email, password);
+        // successsfully logged user in with email and password
+        // returns an object with all user credentials
 
-    const login = (email, password) => {
-        return signInWithEmailAndPassword(auth, email, password)
-            .then((response) => {
-                // successsfully logged user in with email and password
-                // returns an object with all user credentials
+        setUser(response.user);
+        console.log(response.user);
 
-                setUser(response.user);
-                console.log(response.user);
-                return response.user;
-            });
+        return response.user;
     };
 
-    const signup = (email, password) => {
-        return createUserWithEmailAndPassword(auth, email, password)
-            .then((response) => {
-                // successfully created a new user with the given email and password
-                // returns an object with all user credentials
+    const signup = async (email, password, org) => {
+        const response = await createUserWithEmailAndPassword(auth, email, password);
+        // successfully created a new user with the given email and password
+        // returns an object with all user credentials
 
-                setUser(response.user);
-                console.log(response.user);
+        setUser(response.user);
+        console.log(response.user);
 
-                const uid = response['user'].uid;
-                // console.log(uid);
-                const data = {
-                    events: 0,
-                    timestamp: serverTimestamp()
-                };
+        const uid = response['user'].uid;
 
-                const newDoc = doc(db, "users", uid);
-                setDoc(newDoc, data);
+        const data = {
+            totalEvents: 0,
+            accountCreated: serverTimestamp(),
+            orgName: org
+        };
 
-                return response.user;
-            });
+        const newDoc = doc(db, "users", uid);
+
+        // firestore method to set data;
+        setDoc(newDoc, data);
+        return response.user;
     };
 
-    const logout = () => {
-        return signOut(auth)
-            .then(() => {
-                setUser(false);
-                console.log("logged out");
-
-            });
+    const logout = async () => {
+        await signOut(auth);
+        setUser(false);
+        console.log("logged out");
     };
 
     // Subscribe to user on mount
@@ -70,6 +65,7 @@ export const AuthProvider = ({ children }) => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             setUser(user);
             setAuthenticating(false);
+            // setOrgName(auth.orgName)
         });
 
         // Cleanup subscription on unmount

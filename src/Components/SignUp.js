@@ -9,6 +9,7 @@ function SignUp() {
     const [password, setPassword] = useState('');
     const [accessCode, setAccessCode] = useState('');
     const [confirmPass, setConfirmPass] = useState('');
+    const [org, setOrg] = useState('');
 
     const secretCode = process.env.REACT_APP_SECRET_USACS_ACCESS_CODE;
 
@@ -30,15 +31,21 @@ function SignUp() {
             return;
         }
 
+        // the user must enter his/her org name
+        if (org.length === 0) {
+            alert('Enter your organization name!');
+            return;
+        }
+
         // check if the access code is true or false
         if (accessCode !== secretCode) {
-            alert('Incorrect access code. Are you really a USACS eboard member?');
+            alert('Incorrect access code. Are you really an eboard member?');
             return;
         }
 
         //firebase register account here
         try {
-            await auth.signup(email, password);
+            await auth.signup(email, password, org.toLowerCase());
             console.log("successfully signed up");
             navigate("/dashboard");
         }
@@ -53,6 +60,7 @@ function SignUp() {
         setPassword('');
         setConfirmPass('');
         setAccessCode('');
+        setOrg('');
 
     };
 
@@ -84,6 +92,13 @@ function SignUp() {
                         onChange={(e) => setConfirmPass(e.target.value)}
                     />
 
+                    <h5>Organization Name</h5>
+                    <input
+                        type="text"
+                        value={org}
+                        onChange={(e) => setOrg(e.target.value)}
+                    />
+
                     <h5>Access Code</h5>
                     <input
                         type="text"
@@ -92,13 +107,13 @@ function SignUp() {
                     />
                 </form>
 
-                <button disabled={!email || !password || !confirmPass && !accessCode} className="signup_signupButton" onClick={register}>
+                <button disabled={!email || !password || !confirmPass || !accessCode || !org} className="signup_signupButton" onClick={register}>
                     Sign up
                 </button>
 
                 <p className="signup_notice">
-                    <h3><strong>NOTICE:</strong> Please only create an account if you are an eboard member
-                        of Rutgers USACS and if you are, use the official gmail as email address.</h3>
+                    <h3><strong>NOTICE:</strong> You must be an eboard member of your organization
+                        to create an account on Trackable.</h3>
                 </p>
 
                 <div className="signup_login">

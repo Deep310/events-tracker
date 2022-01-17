@@ -62,7 +62,7 @@ function Login() {
 
                 <p className="login_notice">
                     <h3><strong>NOTICE:</strong> Please only sign in if you are an eboard member
-                        of Rutgers USACS.</h3>
+                        of an authorized Rutgers student club.</h3>
                 </p>
 
                 <div className="login_login">

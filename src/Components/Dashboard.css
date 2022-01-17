@@ -1,3 +1,14 @@
+.dashboard-container{
+    display: flex !important;
+}
+
 .dashboard{
     margin: 0;
+    background-color: #1B1C30;
+    width: 100%;
+    color: antiquewhite;
+}
+
+.dashboard > p{
+    margin-top: 0;
 }
