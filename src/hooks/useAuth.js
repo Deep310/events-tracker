@@ -18,6 +18,10 @@ export const AuthProvider = ({ children }) => {
     // wrap the firebase sign up, sign in, and sign out methods
     // and save the user to state after each method call
     const login = async (email, password) => {
+        // later work: check if user is already logged in
+        // prevent from loggin in again if he is
+        // show an alert saying you have to log out to login again
+
         const response = await signInWithEmailAndPassword(auth, email, password);
         // successsfully logged user in with email and password
         // returns an object with all user credentials

@@ -2,13 +2,17 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import './NavBar.css'
+import logo from '../bg.png'
 
 function NavBar() {
     const auth = useAuth();
 
     return (
         <header className="header">
-            <a href="." className="logo">Trackd </a>
+            <div className="logo">
+                <img src={logo} alt="Trackd Logo" />
+                <span className="logo-title">Trackd</span>
+            </div>
             <input className="menu-btn" type="checkbox" id="menu-btn" />
             <label className="menu-icon" for="menu-btn"><span className="navicon"></span></label>
             <ul className="menu">

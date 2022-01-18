@@ -44,6 +44,10 @@ a {
     text-decoration: none;
 }
 
+.header .logo .logo-title{
+    padding-left: 10px;
+}
+
 /* menu */
 
 .header .menu {

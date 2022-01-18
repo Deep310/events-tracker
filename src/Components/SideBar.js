@@ -96,7 +96,7 @@ export default function SideBar() {
                                     onClick={() => { navigate("/dashboard") }}
                                     sx={{
                                         '& .MuiSvgIcon-root': {
-                                            paddingRight: '10px',
+                                            paddingRight: 2,
                                         },
                                     }}
                                 >
@@ -112,7 +112,7 @@ export default function SideBar() {
                                     onClick={() => { navigate("/new-event") }}
                                     sx={{
                                         '& .MuiSvgIcon-root': {
-                                            paddingRight: '10px',
+                                            paddingRight: 2,
                                         },
                                     }}
                                 >
@@ -128,7 +128,7 @@ export default function SideBar() {
                                     onClick={() => { navigate("/events-history") }}
                                     sx={{
                                         '& .MuiSvgIcon-root': {
-                                            paddingRight: '10px',
+                                            paddingRight: 2,
                                         },
                                     }}
                                 >
@@ -144,7 +144,7 @@ export default function SideBar() {
                                     onClick={() => { navigate("/") }}
                                     sx={{
                                         '& .MuiSvgIcon-root': {
-                                            paddingRight: '10px',
+                                            paddingRight: 2,
                                         },
                                     }}
                                 >
@@ -160,7 +160,7 @@ export default function SideBar() {
                                     onClick={() => auth.logout()}
                                     sx={{
                                         '& .MuiSvgIcon-root': {
-                                            paddingRight: '10px',
+                                            paddingRight: 2,
                                         },
                                     }}
                                 >

@@ -1,0 +1,9 @@
+.form{
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-question{
+    padding-bottom: 10px;
+}

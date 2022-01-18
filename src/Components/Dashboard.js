@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import SideBar from './SideBar'
 import { useAuth } from '../hooks/useAuth'
 import { db } from '../firebase'
-import { doc, getDoc } from 'firebase/firestore'
+import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
 import './Dashboard.css'
 
 import Box from '@mui/material/Box';
@@ -11,10 +11,12 @@ function Dashboard() {
     const auth = useAuth();
     const [userData, setUserData] = useState(null);
     const [org, setOrg] = useState('');
+    const eventName = "mentorship social";
+    const userName = "Deep Parekh";
 
     useEffect(() => {
         async function getUserData() {
-            console.log(auth);
+            // console.log(auth);
             const docRef = doc(db, "users", auth['user'].uid);
             const docSnap = await getDoc(docRef);
 
@@ -23,9 +25,23 @@ function Dashboard() {
             setOrg(docData.orgName);
 
             console.log(userData, docSnap.id);
+
+            const eventCollection = doc(db, `users/${auth.user.uid}/${eventName}/${userName}`);
+            const specialData = {
+                isMentee: false,
+                isMentor: true,
+                checkInTimestamp: serverTimestamp(),
+            };
+
+            setDoc(eventCollection, specialData);
+            // const eventData = await getDoc(eventCollection);
+            // console.log(eventData.data());
         }
 
         getUserData();
+
+        // edit tab title
+        document.title = "Trackd - Dashboard";
 
     }, [auth.user]);
 
