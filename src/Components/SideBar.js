@@ -66,9 +66,13 @@ export default function SideBar() {
                 display: 'flex'
             }}
         >
-            {/* Side Drawer */}
+            {/* Side Drawer 
+            NOTE: adding width: drawerWidth to sx prop in Drawer component worked */
+            }
             <Drawer
                 sx={{
+                    flexShrink: 0,
+                    width: drawerWidth,
                     '& .MuiDrawer-paper': {
                         color: '#000',
                         backgroundColor: '#fff',
@@ -79,98 +83,96 @@ export default function SideBar() {
                 variant='permanent'
                 anchor='left'
             >
-                <div>
-                    <List>
-                        <ListItem
-                            className={classes.topItem}
-                        >
-                            <IconButton>
-                                <img src={logo} alt='Trackd logo' />
+                <List>
+                    <ListItem
+                        className={classes.topItem}
+                    >
+                        <IconButton>
+                            <img src={logo} alt='Trackd logo' />
+                        </IconButton>
+                        <ListItemText>Trackd</ListItemText>
+                    </ListItem>
+
+                    <ListItemButton>
+                        <ListItem>
+                            <IconButton
+                                onClick={() => { navigate("/dashboard") }}
+                                sx={{
+                                    '& .MuiSvgIcon-root': {
+                                        paddingRight: 2,
+                                    },
+                                }}
+                            >
+                                <GridViewOutlinedIcon />
                             </IconButton>
-                            <ListItemText>Trackd</ListItemText>
+                            <ListItemText onClick={(e) => handleClick(e)}>Dashboard</ListItemText>
                         </ListItem>
+                    </ListItemButton>
 
-                        <ListItemButton>
-                            <ListItem>
-                                <IconButton
-                                    onClick={() => { navigate("/dashboard") }}
-                                    sx={{
-                                        '& .MuiSvgIcon-root': {
-                                            paddingRight: 2,
-                                        },
-                                    }}
-                                >
-                                    <GridViewOutlinedIcon />
-                                </IconButton>
-                                <ListItemText onClick={(e) => handleClick(e)}>Dashboard</ListItemText>
-                            </ListItem>
-                        </ListItemButton>
+                    <ListItemButton>
+                        <ListItem>
+                            <IconButton
+                                onClick={() => { navigate("/new-event") }}
+                                sx={{
+                                    '& .MuiSvgIcon-root': {
+                                        paddingRight: 2,
+                                    },
+                                }}
+                            >
+                                <AddBoxOutlinedIcon />
+                            </IconButton>
+                            <ListItemText onClick={(e) => handleClick(e)}>New Event</ListItemText>
+                        </ListItem>
+                    </ListItemButton>
 
-                        <ListItemButton>
-                            <ListItem>
-                                <IconButton
-                                    onClick={() => { navigate("/new-event") }}
-                                    sx={{
-                                        '& .MuiSvgIcon-root': {
-                                            paddingRight: 2,
-                                        },
-                                    }}
-                                >
-                                    <AddBoxOutlinedIcon />
-                                </IconButton>
-                                <ListItemText onClick={(e) => handleClick(e)}>New Event</ListItemText>
-                            </ListItem>
-                        </ListItemButton>
+                    <ListItemButton>
+                        <ListItem>
+                            <IconButton
+                                onClick={() => { navigate("/events-history") }}
+                                sx={{
+                                    '& .MuiSvgIcon-root': {
+                                        paddingRight: 2,
+                                    },
+                                }}
+                            >
+                                <HistoryToggleOffOutlinedIcon />
+                            </IconButton>
+                            <ListItemText onClick={(e) => handleClick(e)}>Events History</ListItemText>
+                        </ListItem>
+                    </ListItemButton>
 
-                        <ListItemButton>
-                            <ListItem>
-                                <IconButton
-                                    onClick={() => { navigate("/events-history") }}
-                                    sx={{
-                                        '& .MuiSvgIcon-root': {
-                                            paddingRight: 2,
-                                        },
-                                    }}
-                                >
-                                    <HistoryToggleOffOutlinedIcon />
-                                </IconButton>
-                                <ListItemText onClick={(e) => handleClick(e)}>Events History</ListItemText>
-                            </ListItem>
-                        </ListItemButton>
+                    <ListItemButton>
+                        <ListItem>
+                            <IconButton
+                                onClick={() => { navigate("/") }}
+                                sx={{
+                                    '& .MuiSvgIcon-root': {
+                                        paddingRight: 2,
+                                    },
+                                }}
+                            >
+                                <HomeOutlinedIcon />
+                            </IconButton>
+                            <ListItemText onClick={(e) => handleClick(e)}>Home</ListItemText>
+                        </ListItem>
+                    </ListItemButton>
 
-                        <ListItemButton>
-                            <ListItem>
-                                <IconButton
-                                    onClick={() => { navigate("/") }}
-                                    sx={{
-                                        '& .MuiSvgIcon-root': {
-                                            paddingRight: 2,
-                                        },
-                                    }}
-                                >
-                                    <HomeOutlinedIcon />
-                                </IconButton>
-                                <ListItemText onClick={(e) => handleClick(e)}>Home</ListItemText>
-                            </ListItem>
-                        </ListItemButton>
-
-                        <ListItemButton>
-                            <ListItem>
-                                <IconButton
-                                    onClick={() => auth.logout()}
-                                    sx={{
-                                        '& .MuiSvgIcon-root': {
-                                            paddingRight: 2,
-                                        },
-                                    }}
-                                >
-                                    <LogoutOutlinedIcon />
-                                </IconButton>
-                                <ListItemText onClick={() => auth.logout()}>Sign Out</ListItemText>
-                            </ListItem>
-                        </ListItemButton>
-                    </List>
-                </div>
+                    <ListItemButton>
+                        <ListItem>
+                            <IconButton
+                                onClick={() => auth.logout()}
+                                sx={{
+                                    '& .MuiSvgIcon-root': {
+                                        paddingRight: 2,
+                                    },
+                                }}
+                            >
+                                <LogoutOutlinedIcon />
+                            </IconButton>
+                            <ListItemText onClick={() => auth.logout()}>Sign Out</ListItemText>
+                        </ListItem>
+                    </ListItemButton>
+                </List>
             </Drawer>
         </Box>
     );

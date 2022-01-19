@@ -48,6 +48,9 @@ function SignUp() {
         // check if the user has already signed up or not
         // run a query in the users collection to compare...
         // ...value of orgName with user inputted org name
+
+        // check for orgName and not email because you can only have...
+        // ...one account per organization
         const userRef = collection(db, "users");
         const userExistsCheckQuery = query(userRef, where("orgName", "==", org.toLowerCase()));
 
