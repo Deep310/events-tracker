@@ -24,7 +24,7 @@ const theme = createTheme({
 function PrivateOutlet({ children }) {
   const auth = useAuth();
   // console.log(auth);
-  console.log(" I am banana");
+  // console.log(" I am banana");
   return auth.user ? children : <Navigate to="/" />;
 }
 

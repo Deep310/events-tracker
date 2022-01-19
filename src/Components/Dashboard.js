@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import SideBar from './SideBar'
-import Container from '@mui/material/Container'
 import { useAuth } from '../hooks/useAuth'
 import { db } from '../firebase'
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
 import './Dashboard.css'
-
-import Box from '@mui/material/Box';
+import Box from '@mui/material/Box'
 
 function Dashboard() {
     const auth = useAuth();
