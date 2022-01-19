@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
+import { db } from '../firebase'
+import { collection, query, where, getDocs } from 'firebase/firestore'
 import './SignUp.css'
 
 function SignUp() {
@@ -43,6 +45,22 @@ function SignUp() {
             return;
         }
 
+        // check if the user has already signed up or not
+        // run a query in the users collection to compare...
+        // ...value of orgName with user inputted org name
+        const userRef = collection(db, "users");
+        const userExistsCheckQuery = query(userRef, where("orgName", "==", org.toLowerCase()));
+
+        const userExistsCheckQuerySnapshot = await getDocs(userExistsCheckQuery);
+
+        // if we get 0 docs from the query snapshot...
+        // ... it means the organization name doesn't exist in users collection...
+        // ... which means it is safe to create the account using firebase auth
+        if (userExistsCheckQuerySnapshot.docs.length !== 0) {
+            alert("The user already exists. Please log in to access your account.");
+            return;
+        }
+
         //firebase register account here
         try {
             await auth.signup(email, password, org.toLowerCase());
@@ -71,6 +89,7 @@ function SignUp() {
                 <form id="signupForm" noValidate>
                     <h5>E-mail</h5>
                     <input
+                        autoFocus
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}

@@ -42,6 +42,7 @@ function Login() {
                 <form id="loginForm" noValidate>
                     <h5>E-mail</h5>
                     <input
+                        autoFocus
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}

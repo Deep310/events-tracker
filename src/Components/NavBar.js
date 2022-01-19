@@ -26,7 +26,7 @@ function NavBar() {
                 ... else, show sign up and login buttons */}
                 {auth.user &&
                     <>
-                        <li className="signout_button" onClick={() => auth.logout()}>Sign out</li>
+                        <li onClick={() => auth.logout()}><Link to="/">Sign out</Link></li>
                         <li><Link to="/dashboard">Dashboard</Link></li>
                     </>
                 }
