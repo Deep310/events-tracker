@@ -26,8 +26,8 @@ function NavBar() {
                 ... else, show sign up and login buttons */}
                 {auth.user &&
                     <>
-                        <li onClick={() => auth.logout()}><Link to="/">Sign out</Link></li>
                         <li><Link to="/dashboard">Dashboard</Link></li>
+                        <li onClick={() => auth.logout()}><Link to="/">Sign out</Link></li>
                     </>
                 }
                 {!auth.user && (

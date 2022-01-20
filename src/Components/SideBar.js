@@ -75,7 +75,7 @@ export default function SideBar() {
                     width: drawerWidth,
                     '& .MuiDrawer-paper': {
                         color: '#000',
-                        backgroundColor: '#fff',
+                        backgroundColor: '#f9f9f9',
                         width: drawerWidth,
                         boxSizing: 'border-box',
                     },

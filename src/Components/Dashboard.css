@@ -1,9 +1,10 @@
 .dashboard-container{
-    padding: 25px;
-    background-color: #1B1C30;
+    padding: 40px 50px;
+    background-color: #fff;
     color: antiquewhite;
 }
 
 .dashboard{
     width: 100%;
+    color: black;
 }

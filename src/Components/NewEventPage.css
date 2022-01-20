@@ -1,9 +1,19 @@
 .newevent-container{
-    padding: 25px;
-    background-color: #1B1C30;
+    padding: 40px 50px;
+    background-color: #fff;
     color: antiquewhite;
 }
 
 .newevent{
     width: 100%;
+    color: black;
 }
+
+.newevent h2{
+    margin: 0;
+}
+
+.newevent h4{
+    margin-top: 10px;
+}
+

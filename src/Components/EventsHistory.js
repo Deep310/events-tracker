@@ -12,8 +12,10 @@ function EventsHistory() {
                 }}
             >
                 <SideBar />
-                <p>You can view events history here.</p>
-                {console.log("I am on history page.")}
+                <div className="eventhistory">
+                    <p>You can view events history here.</p>
+                    {console.log("I am on history page.")}
+                </div>
             </Box>
         </div>
     )

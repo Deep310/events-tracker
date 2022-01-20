@@ -68,6 +68,7 @@ function CheckInPage() {
             return;
         }
 
+        // if any of the fields is empty, make it red by setting error state true
         if (name === '') {
             setNameError(true);
         }
@@ -92,6 +93,7 @@ function CheckInPage() {
             setIsMentorError(true);
         }
 
+        // implement the backend functionality only if all the fields are filled properly
         if (name && orgName && eventName && code && isMentee && isMentor) {
             // console.log(name, orgName, eventName, code, isMentee, isMentor);
 
@@ -103,7 +105,7 @@ function CheckInPage() {
             // 4) Is the event open for check-in?
             // 5) Is the check-in code correct?
             // 6) Has the user already checked in?
-            // if answer to any of the above is false, then show the user...
+            // if answer to any of the above is true, then show the user...
             // ... appropriate alert and return from the function
 
             // check 1 - Does the organization exist?
