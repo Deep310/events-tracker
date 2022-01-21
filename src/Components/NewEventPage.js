@@ -1,13 +1,11 @@
 import React, { useState } from 'react'
 import { db } from '../firebase'
-import { collection, query, where, getDocs, getDoc, doc, serverTimestamp, setDoc } from "firebase/firestore"
+import { collection, query, where, getDocs, getDoc, doc, serverTimestamp, setDoc, updateDoc } from "firebase/firestore"
 import { useAuth } from '../hooks/useAuth'
 import SideBar from './SideBar'
-import Box from '@mui/material/Box'
-import { Button, Container } from '@mui/material'
+import { Button, Box } from '@mui/material'
 import TextField from '@mui/material/TextField'
 import MenuItem from '@mui/material/MenuItem'
-import { makeStyles } from '@mui/styles'
 import './NewEventPage.css'
 
 const options = [
@@ -21,15 +19,8 @@ const options = [
     },
 ]
 
-const useStyles = makeStyles({
-    input: {
-        color: "#fff"
-    }
-});
-
 function NewEventPage() {
     const auth = useAuth();
-    const classes = useStyles();
 
     // states to store user inputted values
     const [eventName, setEventName] = useState('');
@@ -95,16 +86,97 @@ function NewEventPage() {
         if (eventName && eventCode && isOpen && isOnline) {
 
             // actual backend logic goes here
-            // on hitting 'create' button, do following on the backend
-            // perform following checks
+            // on hitting 'create' button, perform following checks
             // 1) Is the event already created by the admin org?
-            // IN FUTURE - 2) Does the check-in code already exist?
-            // if answer to any of the above is true, then show the user...
+            // 2) Does the check-in code already exist?
+
+            // update on second check - current time 1:!3am on 20 Jan 2022
+            // showed the progress so far to archi...
+            // ... she suggested implementing second check so I don't have to ask...
+            // ... the user for the event name during checkin
+
+            // if answer to any of the above checks is true, then show the user...
             // ... appropriate alert and return from the function
+
+            // ------------------------------------------------------------------------------------------
 
             // check 1 - Is the event already created by the admin org?
             // search events collection for the same event name and if there is one...
             // ...check the createdBy field of that event
+            const orgNameRef = doc(db, "users", auth.user.uid);
+            const orgNameSnap = await getDoc(orgNameRef);
+
+            let orgName;
+            let totalEventsCreated = -1;
+
+            if (orgNameSnap.exists()) {
+                // console.log(orgNameSnap.data());
+                orgName = orgNameSnap.data().orgName;
+                totalEventsCreated = orgNameSnap.data().totalEvents;
+                console.log(orgName, totalEventsCreated);
+                // console.log("I am", orgName);
+            }
+
+            // query events collection to check for an event with same name as user inputted event name
+            // if there is one, check if it is created by the org name
+            const eventsRef = doc(db, "events", eventName.toLowerCase());
+            const eventNameSnap = await getDoc(eventsRef);
+
+            if (eventNameSnap.exists()) {
+                if (eventNameSnap.data().createdBy === orgName) {
+                    console.log("You failed check 1");
+                    alert("You have already created this event. You can't create the same event again.");
+                    return;
+                }
+            }
+
+            // -----------------------------------------------------------------------------------------------------------------
+
+            // check 2 - does the check-in code already exist?
+            // go through all docs of events collection to search for user inputted check in code
+            const checkInCodeRef = collection(db, "events");
+            const checkInCodeQuery = query(checkInCodeRef, where("checkInCode", "==", eventCode));
+
+            const codeSnapshot = await getDocs(checkInCodeQuery);
+
+            // if there is a doc, then alert the user that...
+            // ... he has to use a different code since the one he entered already exists
+            if (codeSnapshot.docs.length !== 0) {
+                console.log("You failed check 2");
+                alert("You have already used this check-in code for one of your previous events. Please use a unique code for each event.");
+                return;
+            }
+
+            else {
+                // now finally all checks are passed so add a new doc...
+                // ... in events collection with appropriate data...
+                // ... and update totalEvents count in user doc in users collection
+                const openChhe = isOpen === "Yes" ? true : false;
+                const onlineChhe = isOnline === "Yes" ? true : false;
+                const newEventData = {
+                    createdAt: serverTimestamp(),
+                    createdBy: orgName,
+                    checkInCode: eventCode,
+                    isOpenForCheckIn: openChhe,
+                    isItOnline: onlineChhe,
+                    eventDescription: eventDesc,
+                };
+
+                const newEventDoc = doc(db, `events/${eventName.toLowerCase()}`);
+                setDoc(newEventDoc, newEventData);
+
+                await updateDoc(orgNameRef, {
+                    totalEvents: totalEventsCreated + 1
+                });
+                console.log('Successfully added a new event.');
+
+                // clear form fields
+                setEventName('');
+                setEventCode('');
+                setIsOpen('');
+                setIsOnline('');
+                setEventDesc('');
+            }
 
         }
 

@@ -1,5 +1,5 @@
 .dashboard-container{
-    padding: 40px 50px;
+    padding: 0 30px;
     background-color: #fff;
     color: antiquewhite;
 }
@@ -7,4 +7,9 @@
 .dashboard{
     width: 100%;
     color: black;
+}
+
+.dashboard-cards{
+    display: flex;
+    justify-content: space-between;
 }

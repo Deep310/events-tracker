@@ -29,7 +29,7 @@ function CheckInPage() {
     // states to save data of all the fields in the form
     const [name, setName] = useState('');
     const [orgName, setOrgName] = useState('');
-    const [eventName, setEventName] = useState('');
+    // const [eventName, setEventName] = useState('');
     const [code, setCode] = useState('');
     const [isMentee, setIsMentee] = useState('');
     const [isMentor, setIsMentor] = useState('');
@@ -38,7 +38,7 @@ function CheckInPage() {
     // if they are, show error using material ui textfield prop - error
     const [nameError, setNameError] = useState(false);
     const [orgNameError, setOrgNameError] = useState(false);
-    const [eventNameError, setEventNameError] = useState(false);
+    // const [eventNameError, setEventNameError] = useState(false);
     const [codeError, setCodeError] = useState(false);
     const [isMenteeError, setIsMenteeError] = useState(false);
     const [isMentorError, setIsMentorError] = useState(false);
@@ -77,10 +77,6 @@ function CheckInPage() {
             setOrgNameError(true);
         }
 
-        if (eventName === '') {
-            setEventNameError(true);
-        }
-
         if (code === '') {
             setCodeError(true);
         }
@@ -94,17 +90,15 @@ function CheckInPage() {
         }
 
         // implement the backend functionality only if all the fields are filled properly
-        if (name && orgName && eventName && code && isMentee && isMentor) {
+        if (name && orgName && code && isMentee && isMentor) {
             // console.log(name, orgName, eventName, code, isMentee, isMentor);
 
             // actual backend logic goes here
             // on submit - check following things
             // 1) Does the organization exist?
-            // 2) Does the event exist?
-            // 3) Is the event created by the organization?
-            // 4) Is the event open for check-in?
-            // 5) Is the check-in code correct?
-            // 6) Has the user already checked in?
+            // 2) Does a doc with user inputted check-in code exist?
+            // 3) Check for createdBy, isOpenForCheckIn fields of that doc
+            // 4) Has the user already checked in?
             // if answer to any of the above is true, then show the user...
             // ... appropriate alert and return from the function
 
@@ -129,84 +123,62 @@ function CheckInPage() {
                 console.log(doc.id, " => ", doc.data());
             });
 
-            // console.log(orgDocId);
-
             // ---------------------------------------------------------------------------------------------------
 
-            // check 2 - Does the event exist in the organization?
+            // check 2 - Does a doc with user inputted check-in code exist?
             // map through the events collection to find a doc whose...
-            // ... createdBy field matches the doc id returned from check 1
+            // ... checkInCode field matches the user inputted check in code
             // if such a doc exists, that means the event exists from that org
-            const eventRef = doc(db, "events", eventName.toLowerCase());
-            const eventNameSnap = await getDoc(eventRef);
+            const eventsRef = collection(db, "events");
+            const codeQuery = query(eventsRef, where("checkInCode", "==", code));
+
+            const codeQuerySnapshot = await getDocs(codeQuery);
             let eventDocData;
+            let eventDocId;
 
             // if the snapshot doesn not exist...
-            // ... it means the event name doesn't exist in events collection
+            // ... it means the check-in code doesn't exist in events collection
             // alert the user saying that and return from the function
-            if (eventNameSnap.exists()) {
-                console.log(eventNameSnap.id, " => ", eventNameSnap.data());
-                eventDocData = eventNameSnap.data();
+            if (codeQuerySnapshot.docs.length === 1) {
 
-                // use a state to store the event data
-                // we will need it to for rest of the checks
-                // setEventDocData(eventNameSnap.data());
+                // the doc exists with the give check-in code
+                // save the doc data to use it in next checks
+                codeQuerySnapshot.forEach((doc) => {
+                    // there will and must only be one doc with the matching code
+                    console.log(doc.id, " => ", doc.data());
+                    eventDocData = doc.data();
+                    eventDocId = doc.id;
+                    console.log(eventDocId, eventDocData);
+                });
             }
             else {
-                alert("The event does not exist. Did you enter the name correctly?");
+                // mostl ikely there are no docs with the given check-in code
+                // it is also possible that there are more than 1 docs..(CONFIRM THIS IS FALSE)
+                console.log("Can't find this code sorry dude.");
+                alert(`The check-in code is incorrect. Please enter the code provided by the e-board members of ${orgName}.`);
                 return;
             }
-
-            console.log(eventDocData);
 
             // --------------------------------------------------------------------------------------------------
 
-            // check 3 - Is the event created by the organization
-            // now that we know that the event name exists...
-            // ... get data of that doc and check if it was created by...
-            // ... the user inputted org by matching it with createdBy field in doc
-            if (eventDocData.createdBy == orgName.toLowerCase()) {
-                console.log(eventDocData.createdBy, "created", eventName.toLowerCase());
+            // check 3 - Is the event created by the organization and is it open to check-in?
+            // now that we know that the checkin code exists...
+            // ... get data of that doc and check if it was created by the inputted org...
+            // ... and check if it is open for check-in or not
+            if (eventDocData.createdBy === orgName.toLowerCase() && eventDocData.isOpenForCheckIn) {
+                console.log(`${orgName} created this event and it is open for check-in.`);
             }
             else {
-                alert(`The event is not created by ${orgName}. Did you enter the name correctly?`);
+                alert(`Either this event is not created by ${orgName} or this event is not open for check-in.`);
                 return;
             }
 
             // ------------------------------------------------------------------------------------------------------
 
-            // check 4 - Is the event open for check-in?
-            // now that we know the event name exists and it is created by the inputted org...
-            // ...check if the user is allowed to check in to the event or not...
-            // ...by checking the value of isOpenForCheckIn field in the doc
-            if (eventDocData.isOpenForCheckIn) {
-                console.log(eventName.toLowerCase(), "is open for check in");
-            }
-            else {
-                alert(`${eventName} is not open for check-in.`);
-                return;
-            }
-
-            // -------------------------------------------------------------------------------------------------
-
-            // check 5 - Is the check in code correct? 
-            // now that we've confirmed ...everything about the event
-            // check if the code is actually correct by matching it with...
-            // ...checkInCode field of the event doc
-            if (eventDocData.checkInCode == code) {
-                console.log("The access code is correct.");
-            }
-            else {
-                alert(`${code} is not the same as ${eventDocData.checkInCode}`);
-                return;
-            }
-
-            // ------------------------------------------------------------------------------------------------------
-
-            // check 6 - Has the user already checked in? (last check finally!!!)
+            // check 4 - Has the user already checked in? (last check finally!!!)
             // if the user doesn't exist in eventname/attendee collection...
             // ...add him to the attendees collection. Show an alert if he exists already. 
-            const attendeeRef = doc(db, `events/${eventName.toLowerCase()}/attendees/${name}`);
+            const attendeeRef = doc(db, `events/${eventDocId}/attendees/${name}`);
             const attendeeSnap = await getDoc(attendeeRef);
 
             if (attendeeSnap.exists()) {
@@ -216,15 +188,15 @@ function CheckInPage() {
             else {
                 // if the attendee does not exist in attendees collection...
                 // ...make a new doc with doc.id = attendee name and set all the data fields
-                const isItMentee = isMentee == "Yes" ? true : false;
-                const isItMentor = isMentor == "Yes" ? true : false;
+                const isItMentee = isMentee === "Yes" ? true : false;
+                const isItMentor = isMentor === "Yes" ? true : false;
                 const newAttendeeData = {
                     checkInTimestamp: serverTimestamp(),
                     isMentee: isItMentee,
                     isMentor: isItMentor,
                 }
 
-                const newAttendeeDoc = doc(db, `events/${eventName.toLowerCase()}/attendees/${name}`);
+                const newAttendeeDoc = doc(db, `events/${eventDocId}/attendees/${name}`);
                 setDoc(newAttendeeDoc, newAttendeeData);
                 console.log('attendee does not exist. So I added him');
                 console.log('Finally all checks passed!! whooooof');
@@ -235,14 +207,12 @@ function CheckInPage() {
             // clear all fields - reset their states
             setName('');
             setOrgName('');
-            setEventName('');
             setCode('');
             setIsMentee('');
             setIsMentor('');
 
             setNameError(false);
             setOrgNameError(false);
-            setEventNameError(false);
             setCodeError(false);
             setIsMenteeError(false);
             setIsMentorError(false);
@@ -260,7 +230,6 @@ function CheckInPage() {
                 <form noValidate onSubmit={handleSubmit} autoComplete="off" className="form">
                     <TextField sx={{ marginBottom: 5 }} onChange={(e) => setName(e.target.value)} error={nameError} fullWidth required label="Full Name" variant="outlined" value={name} />
                     <TextField sx={{ marginBottom: 5 }} onChange={(e) => setOrgName(e.target.value)} error={orgNameError} fullWidth required label="Organization Name" variant="outlined" value={orgName} />
-                    <TextField sx={{ marginBottom: 5 }} onChange={(e) => setEventName(e.target.value)} error={eventNameError} fullWidth required label="Event Name" variant="outlined" value={eventName} />
                     <TextField sx={{ marginBottom: 5 }} onChange={(e) => setCode(e.target.value)} error={codeError} fullWidth required label="Check-in Code" variant="outlined" value={code} />
                     <TextField
                         sx={{ marginBottom: 5 }}
