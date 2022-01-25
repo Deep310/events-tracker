@@ -44,6 +44,9 @@ export const AuthProvider = ({ children }) => {
 
         const data = {
             totalEvents: 0,
+            totalAttendees: 0,
+            totalMentees: 0,
+            totalMentors: 0,
             accountCreated: serverTimestamp(),
             orgName: org
         };

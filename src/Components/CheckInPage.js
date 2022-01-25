@@ -89,6 +89,11 @@ function CheckInPage() {
             setIsMentorError(true);
         }
 
+        if (isMentor === 'Yes' && isMentee === 'Yes') {
+            alert('You can not be a mentor and a mentee. Please answer carefully.');
+            return;
+        }
+
         // implement the backend functionality only if all the fields are filled properly
         if (name && orgName && code && isMentee && isMentor) {
             // console.log(name, orgName, eventName, code, isMentee, isMentor);
@@ -110,6 +115,12 @@ function CheckInPage() {
 
             const orgNameSnapshot = await getDocs(orgNameQuery);
 
+            let docId;
+            let userOrgName;
+            let totalAttendeesCame = -1;
+            let totalMentorsCame = -1;
+            let totalMenteesCame = -1;
+
             // if we get 0 docs from the query snapshot...
             // ... it means the organization name doesn't exist in users collection...
             // ... alert the user saying that and return from the function
@@ -120,7 +131,16 @@ function CheckInPage() {
 
             orgNameSnapshot.forEach((doc) => {
                 // there will only be one doc with the matching org name
-                console.log(doc.id, " => ", doc.data());
+                docId = doc.id;
+                console.log(doc.data(), docId);
+
+                userOrgName = doc.data().orgName;
+                totalAttendeesCame = doc.data().totalAttendees;
+                totalMentorsCame = doc.data().totalMentors;
+                totalMenteesCame = doc.data().totalMentees;
+                console.log(userOrgName, totalAttendeesCame, totalMentorsCame, totalMenteesCame);
+
+                console.log("this is first console log");
             });
 
             // ---------------------------------------------------------------------------------------------------
@@ -141,20 +161,20 @@ function CheckInPage() {
             // alert the user saying that and return from the function
             if (codeQuerySnapshot.docs.length === 1) {
 
-                // the doc exists with the give check-in code
+                // the doc exists with the given check-in code
                 // save the doc data to use it in next checks
                 codeQuerySnapshot.forEach((doc) => {
                     // there will and must only be one doc with the matching code
-                    console.log(doc.id, " => ", doc.data());
+                    // console.log(doc.id, " => ", doc.data());
                     eventDocData = doc.data();
                     eventDocId = doc.id;
-                    console.log(eventDocId, eventDocData);
+                    // console.log(eventDocId, eventDocData);
                 });
             }
             else {
                 // mostl ikely there are no docs with the given check-in code
                 // it is also possible that there are more than 1 docs..(CONFIRM THIS IS FALSE)
-                console.log("Can't find this code sorry dude.");
+                // console.log("Can't find this code sorry dude.");
                 alert(`The check-in code is incorrect. Please enter the code provided by the e-board members of ${orgName}.`);
                 return;
             }
@@ -199,7 +219,43 @@ function CheckInPage() {
                 const newAttendeeDoc = doc(db, `events/${eventDocId}/attendees/${name}`);
                 setDoc(newAttendeeDoc, newAttendeeData);
                 console.log('attendee does not exist. So I added him');
-                console.log('Finally all checks passed!! whooooof');
+                //console.log('Finally all checks passed!! whooooof');
+
+                // now update the fields in document of the org in users collection
+                // 
+                const docRef = doc(db, "users", docId);
+
+                if (isItMentor && !isItMentee) {
+                    setDoc(docRef, {
+                        totalAttendees: totalAttendeesCame + 1,
+                        totalMentors: totalMentorsCame + 1,
+                    },
+                        {
+                            merge: true
+                        });
+                }
+
+                if (!isItMentor && isItMentee) {
+                    setDoc(docRef, {
+                        totalAttendees: totalAttendeesCame + 1,
+                        totalMentees: totalMenteesCame + 1
+                    },
+                        {
+                            merge: true
+                        });
+                }
+
+                if (!isItMentor && !isItMentee) {
+                    setDoc(docRef, {
+                        totalAttendees: totalAttendeesCame + 1,
+                    },
+                        {
+                            merge: true
+                        });
+                }
+
+                console.log('Successfully added a new attendee.');
+
             }
 
             // ----------------------------------------------------------------------------------

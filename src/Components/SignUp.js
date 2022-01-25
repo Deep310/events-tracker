@@ -13,7 +13,7 @@ function SignUp() {
     const [confirmPass, setConfirmPass] = useState('');
     const [org, setOrg] = useState('');
 
-    const secretCode = process.env.REACT_APP_SECRET_USACS_ACCESS_CODE;
+    const secretUSACSCode = '10020130';
 
     const auth = useAuth();
 
@@ -40,7 +40,8 @@ function SignUp() {
         }
 
         // check if the access code is true or false
-        if (accessCode !== secretCode) {
+        if (accessCode !== secretUSACSCode) {
+            console.log("I am inside");
             alert('Incorrect access code. Are you really an eboard member?');
             return;
         }
@@ -135,7 +136,7 @@ function SignUp() {
 
                 <p className="signup_notice">
                     <h3><strong>NOTICE:</strong> You must be an eboard member of your organization
-                        to create an account on Trackable.</h3>
+                        to create an account on Trackd.</h3>
                 </p>
 
                 <div className="signup_login">

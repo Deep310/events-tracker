@@ -16,6 +16,17 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 const theme = createTheme({
   typography: {
     fontFamily: 'Quicksand',
+  },
+  palette: {
+    primary: {
+      main: '#1976d2',
+    },
+    secondary: {
+      main: '#000',
+    },
+    warning: {
+      main: '#F6F8FA',
+    }
   }
 })
 
