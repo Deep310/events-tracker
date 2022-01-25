@@ -1,5 +1,5 @@
 .newevent-container{
-    padding: 40px 50px;
+    padding: 0 30px;
     background-color: #fff;
     color: antiquewhite;
 }
@@ -9,8 +9,8 @@
     color: black;
 }
 
-.newevent h2{
-    margin: 0;
+.newevent h1{
+    margin-bottom: 5px;
 }
 
 .newevent h4{

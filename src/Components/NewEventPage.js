@@ -32,7 +32,7 @@ function NewEventPage() {
     const [eventDesc, setEventDesc] = useState('');
 
     // states to check if the fields are empty 
-    // if they are, show error using material ui textfield prop - error
+    // if they are, show error by setting material ui textfield prop - error to true
     const [eventNameError, setEventNameError] = useState(false);
     const [eventCodeError, setEventCodeError] = useState(false);
     const [isOpenError, setIsOpenError] = useState(false);
@@ -58,14 +58,19 @@ function NewEventPage() {
         setIsOpen('');
         setIsOnline('');
         setEventDesc('');
-        console.log("You cancelled me.");
+
+        setEventNameError(false);
+        setEventCodeError(false);
+        setIsOpenError(false);
+        setIsOnlineError(false);
     };
 
     const handleSubmit = async (e) => {
         // prevent browser from refreshing automatically
         e.preventDefault();
 
-        // if any of the fields is empty, make it red by setting error state true
+        // if any of the fields is empty (except description), 
+        // make it red by setting error state true
         if (eventName === '') {
             setEventNameError(true);
         }
@@ -90,7 +95,7 @@ function NewEventPage() {
             // 1) Is the event already created by the admin org?
             // 2) Does the check-in code already exist?
 
-            // update on second check - current time 1:!3am on 20 Jan 2022
+            // update on second check - current time 1:13am on 20 Jan 2022
             // showed the progress so far to archi...
             // ... she suggested implementing second check so I don't have to ask...
             // ... the user for the event name during checkin
@@ -192,8 +197,8 @@ function NewEventPage() {
                 <SideBar />
 
                 <div className="newevent">
-                    <h2>Create a new event</h2>
-                    <h4>It will take less than 2 minutes to fill out the following form and create a new event!</h4>
+                    <h1>Create a new event</h1>
+                    <h4>It takes less than 1 minute to fill out the following form and create a new event!</h4>
 
                     <form noValidate autoComplete="off" className="form">
                         <TextField sx={{ marginBottom: 5 }} onChange={(e) => setEventName(e.target.value)} error={eventNameError} fullWidth required label="Event Name" variant="outlined" value={eventName} />
@@ -279,6 +284,7 @@ function NewEventPage() {
                             Cancel
                         </Button>
                     </form>
+
                     {console.log("I am on new events page.")}
                 </div>
             </Box>

@@ -75,7 +75,7 @@ export default function SideBar() {
                     width: drawerWidth,
                     '& .MuiDrawer-paper': {
                         color: '#000',
-                        backgroundColor: '#f9f9f9',
+                        backgroundColor: '#F6F8FA',
                         width: drawerWidth,
                         boxSizing: 'border-box',
                     },
@@ -103,7 +103,7 @@ export default function SideBar() {
                                     },
                                 }}
                             >
-                                <GridViewOutlinedIcon />
+                                <GridViewOutlinedIcon color="secondary" />
                             </IconButton>
                             <ListItemText onClick={(e) => handleClick(e)}>Dashboard</ListItemText>
                         </ListItem>
@@ -119,7 +119,7 @@ export default function SideBar() {
                                     },
                                 }}
                             >
-                                <AddBoxOutlinedIcon />
+                                <AddBoxOutlinedIcon color="secondary" />
                             </IconButton>
                             <ListItemText onClick={(e) => handleClick(e)}>New Event</ListItemText>
                         </ListItem>
@@ -135,7 +135,7 @@ export default function SideBar() {
                                     },
                                 }}
                             >
-                                <HistoryToggleOffOutlinedIcon />
+                                <HistoryToggleOffOutlinedIcon color="secondary" />
                             </IconButton>
                             <ListItemText onClick={(e) => handleClick(e)}>Events History</ListItemText>
                         </ListItem>
@@ -151,7 +151,7 @@ export default function SideBar() {
                                     },
                                 }}
                             >
-                                <HomeOutlinedIcon />
+                                <HomeOutlinedIcon color="secondary" />
                             </IconButton>
                             <ListItemText onClick={(e) => handleClick(e)}>Home</ListItemText>
                         </ListItem>
@@ -167,7 +167,7 @@ export default function SideBar() {
                                     },
                                 }}
                             >
-                                <LogoutOutlinedIcon />
+                                <LogoutOutlinedIcon color="secondary" />
                             </IconButton>
                             <ListItemText onClick={() => auth.logout()}>Sign Out</ListItemText>
                         </ListItem>

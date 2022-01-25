@@ -12,4 +12,46 @@
 .dashboard-cards{
     display: flex;
     justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.dashboard-lower-container{
+    display: flex;
+    /*flex-direction: row-reverse;*/
+    justify-content: space-between;
+    padding-top: 20px;
+}
+
+.dashboard-events{
+    flex-grow: 2;
+    padding-right: 30px;
+}
+
+.dashboard-eventsTitle{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+}
+
+.dashboard-eventsTitle > h2{
+    margin: 0;
+    padding-top: 5px;
+}
+
+.dashboard-eventItem{
+    display: flex;
+    justify-content: space-between;
+}
+
+.dashboard-eventItem > p{
+    margin: 0;
+    padding-top: 5px;
+}
+
+.dashboard-graph{
+    flex-grow: 3;
+}
+
+.dashboard-graph > h2{
+    margin: 0;
 }
