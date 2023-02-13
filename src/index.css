@@ -7,3 +7,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-family: 'Quicksand', sans-serif;
 }
+
+
+::-moz-selection { /* Code for Firefox */
+  background: #ff69b4;
+}
+
+::selection {
+  background: #f88379;
+}

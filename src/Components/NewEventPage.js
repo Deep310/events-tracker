@@ -25,6 +25,7 @@ function NewEventPage() {
     // states to store user inputted values
     const [eventName, setEventName] = useState('');
     const [eventCode, setEventCode] = useState('');
+    const [eventDate, setEventDate] = useState('');
     const [isOpen, setIsOpen] = useState('');
     const [isOnline, setIsOnline] = useState('');
 
@@ -35,6 +36,7 @@ function NewEventPage() {
     // if they are, show error by setting material ui textfield prop - error to true
     const [eventNameError, setEventNameError] = useState(false);
     const [eventCodeError, setEventCodeError] = useState(false);
+    const [eventDateError, setEventDateError] = useState(false);
     const [isOpenError, setIsOpenError] = useState(false);
     const [isOnlineError, setIsOnlineError] = useState(false);
 
@@ -55,12 +57,14 @@ function NewEventPage() {
         // clear the form fields without doing any backend work.
         setEventName('');
         setEventCode('');
+        setEventDate('');
         setIsOpen('');
         setIsOnline('');
         setEventDesc('');
 
         setEventNameError(false);
         setEventCodeError(false);
+        setEventDateError(false);
         setIsOpenError(false);
         setIsOnlineError(false);
     };
@@ -79,6 +83,10 @@ function NewEventPage() {
             setEventCodeError(true);
         }
 
+        if (eventDate === '') {
+            setEventDateError(true);
+        }
+
         if (isOpen === '') {
             setIsOpenError(true);
         }
@@ -88,17 +96,15 @@ function NewEventPage() {
         }
 
         // implement the backend functionality only if all the fields are filled properly
-        if (eventName && eventCode && isOpen && isOnline) {
+        if (eventName && eventCode && eventDate && isOpen && isOnline) {
 
             // actual backend logic goes here
             // on hitting 'create' button, perform following checks
             // 1) Is the event already created by the admin org?
             // 2) Does the check-in code already exist?
 
-            // update on second check - current time 1:13am on 20 Jan 2022
-            // showed the progress so far to archi...
-            // ... she suggested implementing second check so I don't have to ask...
-            // ... the user for the event name during checkin
+            // ... by implementing second check, I don't have to ask...
+            // ... the user for the event name during check-in
 
             // if answer to any of the above checks is true, then show the user...
             // ... appropriate alert and return from the function
@@ -158,14 +164,34 @@ function NewEventPage() {
                 // ... and update totalEvents count in user doc in users collection
                 const openChhe = isOpen === "Yes" ? true : false;
                 const onlineChhe = isOnline === "Yes" ? true : false;
-                const newEventData = {
-                    createdAt: serverTimestamp(),
-                    createdBy: orgName,
-                    checkInCode: eventCode,
-                    isOpenForCheckIn: openChhe,
-                    isItOnline: onlineChhe,
-                    eventDescription: eventDesc,
-                };
+                let newEventData;
+
+                if (totalEventsCreated === 0) {
+                    newEventData = {
+                        createdAt: serverTimestamp(),
+                        createdBy: orgName,
+                        checkInCode: eventCode,
+                        eventStartDate: eventDate,
+                        isOpenForCheckIn: openChhe,
+                        isItOnline: onlineChhe,
+                        eventDescription: eventDesc,
+                        totalAttendees: 0,
+                        firstEvent: true,
+                    };
+                }
+
+                else {
+                    newEventData = {
+                        createdAt: serverTimestamp(),
+                        createdBy: orgName,
+                        checkInCode: eventCode,
+                        eventStartDate: eventDate,
+                        isOpenForCheckIn: openChhe,
+                        isItOnline: onlineChhe,
+                        totalAttendees: 0,
+                        eventDescription: eventDesc,
+                    };
+                }
 
                 const newEventDoc = doc(db, `events/${eventName.toLowerCase()}`);
                 setDoc(newEventDoc, newEventData);
@@ -178,6 +204,7 @@ function NewEventPage() {
                 // clear form fields
                 setEventName('');
                 setEventCode('');
+                setEventDate('');
                 setIsOpen('');
                 setIsOnline('');
                 setEventDesc('');
@@ -203,6 +230,7 @@ function NewEventPage() {
                     <form noValidate autoComplete="off" className="form">
                         <TextField sx={{ marginBottom: 5 }} onChange={(e) => setEventName(e.target.value)} error={eventNameError} fullWidth required label="Event Name" variant="outlined" value={eventName} />
                         <TextField sx={{ marginBottom: 5 }} onChange={(e) => setEventCode(e.target.value)} error={eventCodeError} fullWidth required label="Check-in Code" variant="outlined" value={eventCode} />
+                        <TextField sx={{ marginBottom: 5 }} onChange={(e) => setEventDate(e.target.value)} error={eventDateError} fullWidth required label="Event Date (Ex: MM/DD/YYYY)" variant="outlined" value={eventDate} />
                         <TextField
                             sx={{ marginBottom: 5 }}
                             fullWidth

@@ -3,11 +3,12 @@ import SideBar from './SideBar'
 import { useAuth } from '../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
 import { db } from '../firebase'
-import { doc, getDoc, getDocs, collection, query, where, QuerySnapshot } from 'firebase/firestore'
+import { doc, getDoc, getDocs, collection, query, where, QuerySnapshot, setDoc } from 'firebase/firestore'
 import './Dashboard.css'
 import { Box, Button } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import Card from './DashboardCard'
+import LineChart from './LineChart'
 
 function Dashboard() {
     const auth = useAuth();
@@ -16,6 +17,46 @@ function Dashboard() {
     const [userData, setUserData] = useState('');
     const [org, setOrg] = useState('');
     const [eventsInfo, setEventsInfo] = useState([]);
+    const [checkInStatus, setCheckInStatus] = useState(0);
+
+    const handleCheckInStatusClick = async (eventName) => {
+        // console.log(eventName);
+
+        // search for this event in events collection...
+        // ... get the value of its isOpenForCheckIn field and...
+        // ... inverse the value based on the current value
+        const eventRef = doc(db, "events", eventName);
+        const eventSnap = await getDoc(eventRef);
+
+        // if it is true, update it to false the vice versa
+        if (eventSnap.data().isOpenForCheckIn) {
+            // console.log("I am open for check-in. I want to be closed.");
+
+            // I am doing a force state update here
+            // REMINDER: THINK OF ANOTHER WAY TO SOLVE THIS
+            setCheckInStatus(checkInStatus + 1);
+            console.log(checkInStatus);
+
+            setDoc(eventRef, {
+                isOpenForCheckIn: false
+            },
+                {
+                    merge: true
+                });
+        }
+        else {
+            // console.log("I am closed for check-in. I want to be open.");
+            setCheckInStatus(checkInStatus + 1);
+            console.log(checkInStatus);
+
+            setDoc(eventRef, {
+                isOpenForCheckIn: true
+            },
+                {
+                    merge: true
+                });
+        }
+    }
 
     useEffect(() => {
         // edit tab title
@@ -23,14 +64,20 @@ function Dashboard() {
 
         async function getUserData() {
             // console.log(auth);
+
+            // first thing we need - info for the metrics cards
+            // that is info about total events, attendees, mentors, and mentees
             const docRef = doc(db, "users", auth['user'].uid);
             const docSnap = await getDoc(docRef);
 
-            const orgName = docSnap.data().orgName.toUpperCase();
+            // We need the org name to add with the "Welcome... " text
+            // extract it from doc returned from previous query
+            const orgName = docSnap.data().orgName;
 
-
+            // fetch all the events created by the user from "events" collection
+            // along with their check-in status to display on dashboard
             const eventsRef = collection(db, "events");
-            const eventsQuery = query(eventsRef, where("createdBy", "==", orgName.toLowerCase()));
+            const eventsQuery = query(eventsRef, where("createdBy", "==", orgName));
             const eventsQuerySnapshot = await getDocs(eventsQuery);
             let eventsObject = [];
 
@@ -50,24 +97,19 @@ function Dashboard() {
 
             });
 
-            db.collection("events").doc("usacs labs 1").collection("attendees")
-                .get()
-                .then((querySnapshot) => {
-                    querySnapshot.forEach(doc => {
-                        console.log(doc.id, "=>", doc.data());
-                    })
-                })
-                .catch(err => {
-                    console.error("Got an error", err);
-                });
+            // fetch all docs from the attendees subcollection
+            const attendeesRef = collection(db, "events",)
 
-            setUserData(docSnap.data());
             setOrg(orgName);
+            setUserData(docSnap.data());
         }
 
         getUserData();
-        // console.log("i am events", eventsInfo);
-    }, []);
+
+        // this hook should re-render when the event status changes
+        // which means when there is an update in check in status of event, re-render the hook
+        // this is to make sure the text on the button updates in real time after re-render
+    }, [checkInStatus]);
 
     return (
         <div className="dashboard-container">
@@ -80,7 +122,7 @@ function Dashboard() {
 
                 <div className="dashboard">
 
-                    <h1>Welcome, {org}</h1>
+                    <h1>Welcome, {org.toUpperCase()}</h1>
                     {/* <p>You are logged in as {auth.user.email}</p>
                     <p>Your id is {auth.user.uid}</p> 
 
@@ -116,19 +158,19 @@ function Dashboard() {
                                 </Button>
                             </div>
 
-                            {eventsInfo.map(function (event, i) {
-                                console.log(event.creationTime)
+                            {eventsInfo ? eventsInfo.map(function (event, i) {
+                                // console.log(event.creationTime)
                                 return (
-                                    <>
-                                        <div key={i} className="dashboard-eventItem">
+                                    <div key={i}>
+                                        <div className="dashboard-eventItem">
                                             <p>{event.eventName}</p>
                                             <Button
                                                 sx={{
                                                     '&:hover': {
-                                                        backgroundColor: '#d3d3d3',
+                                                        backgroundColor: '#f6f8fa',
                                                     },
                                                 }}
-                                                onClick={() => navigate("/new-event")}
+                                                onClick={() => handleCheckInStatusClick(event.eventName)}
                                                 color="warning"
                                                 type="submit"
                                                 variant="contained"
@@ -139,13 +181,15 @@ function Dashboard() {
                                             </Button>
                                         </div>
                                         <hr />
-                                    </>
+                                    </div>
                                 )
-                            })}
+                            }) : <p>No events to show</p>}
                         </div>
 
                         <div className="dashboard-graph">
-                            <h2>Attendee vs Time Chart</h2>
+                            <h2>Attendees over time</h2>
+                            <LineChart />
+
                         </div>
                     </div>
                 </div>

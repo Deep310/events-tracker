@@ -1,10 +1,35 @@
 .eventhistory-container{
-    padding: 40px 50px;
+    padding: 0 30px;
     background-color: #fff;
-    color: antiquewhite;
 }
 
 .eventhistory{
     width: 100%;
     color: black;
+}
+
+.eventhistory h1{
+    margin-bottom: 5px;
+}
+
+.eventhistory h4{
+    margin-top: 10px;
+}
+
+.event-dataTable{
+    margin: 50px 0;
+}
+
+.eventhistory-loader{
+    display: flex;
+}
+
+.loader-mainContent{
+    margin-left: 30px;
+}
+
+@media screen and (max-width: 768px){
+    .eventhistory-loader{
+        display: none;
+    }
 }

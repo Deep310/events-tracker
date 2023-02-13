@@ -1,0 +1,52 @@
+.home{
+    margin: 0;   
+}
+
+.home-landingSection{
+    padding: 50px 30px;
+
+    display: flex;
+    justify-content: space-between;
+    background-color: #C5DBF2;
+}
+
+.home-landingText{
+    color: #241C15;
+    width: 50%;
+    padding: 80px 20px 20px 80px;
+    font-size: 25px;
+}
+
+.home-landingText > h5{
+    padding-right: 75px;
+}
+
+.home-landingImg > img{
+    max-width:100%;
+    max-height:100%;
+}
+
+.home-landingImg {
+    height: 500px;
+    width: 50%;
+    padding-top: 70px;
+}
+
+/* styling for the check-in section */
+.home-checkIn{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 60px;
+    position: relative;
+}
+
+.home-checkIn > h1{
+    font-size: 50px;
+}
+
+/* styling for about section */
+.home-about {
+    background-color: aqua;
+}

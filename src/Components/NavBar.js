@@ -16,9 +16,6 @@ function NavBar() {
             <input className="menu-btn" type="checkbox" id="menu-btn" />
             <label className="menu-icon" for="menu-btn"><span className="navicon"></span></label>
             <ul className="menu">
-                {auth.user &&
-                    <li><Link to="/">Home</Link></li>
-                }
                 <li><Link to="/#about">About</Link></li>
                 <li><Link to="/#contact">Contact Us</Link></li>
 

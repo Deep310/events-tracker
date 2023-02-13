@@ -25,7 +25,7 @@ const theme = createTheme({
       main: '#000',
     },
     warning: {
-      main: '#F6F8FA',
+      main: '#d3d3d3',
     }
   }
 })

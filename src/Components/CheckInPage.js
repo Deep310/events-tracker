@@ -280,7 +280,6 @@ function CheckInPage() {
         <>
             <NavBar />
             <Container>
-                {auth.user ? <p>hi</p> : <p>bye</p>}
                 <p>Welcome, user</p>
 
                 <form noValidate onSubmit={handleSubmit} autoComplete="off" className="form">
